@@ -4,7 +4,7 @@ from core.config import settings
 
 engine = create_engine(settings.SQLALCHEMY_DATABASE_URL)
 
-base = declarative_base()
+Base = declarative_base()
 
 SessionLocal = sessionmaker(bind=engine)
 
