@@ -1,7 +1,8 @@
-from db.database import Base
+from src.db.database import Base
 from sqlalchemy.orm import mapped_column, Mapped , relationship
 from sqlalchemy import String
 
+print(Base)
 
 class User(Base):
     __tablename__ = "users"
