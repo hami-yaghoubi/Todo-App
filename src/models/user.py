@@ -6,4 +6,4 @@ class User(Base):
     __tablename__ = "users"
     id : Mapped[int] = mapped_column(primary_key=True)
     username : Mapped[str] = mapped_column(String(15),unique=True)
-    tasks : Mapped[list["Task"]] = relationship(back_populates="user")
+    tasks : Mapped[list["Task"]] = relationship(back_populates="user", cascade="all, delete-orphan")

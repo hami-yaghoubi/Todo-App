@@ -1,27 +1,28 @@
 from fastapi import APIRouter, Depends,status
 from sqlalchemy.orm import Session
-from db.database import get_db
-from schemas.task import TaskCreate, TaskResponse, TaskUpdate
+from src.db.database import get_db
+from src.schemas.task import TaskCreate, TaskResponse, TaskUpdate
+import src.services.task as task_services
+
 
 router = APIRouter(prefix="/tasks",tags=["tasks"])
 
 @router.post("/", response_model=TaskResponse, status_code=status.HTTP_201_CREATED)
 def create_task(task_data : TaskCreate, db: Session = Depends(get_db)):
-    pass
-
+    return task_services.create_task(task_data, db)
 
 @router.get("/", response_model=list[TaskResponse], status_code=status.HTTP_200_OK)
 def get_tasks(db: Session = Depends(get_db)):
-    pass
+    return task_services.get_tasks(db)
 
 @router.get("/{task_id}", response_model=list[TaskResponse], status_code=status.HTTP_200_OK)
-def get_tasks(task_id: int ,db: Session = Depends(get_db)):
-    pass
+def get_task(task_id: int ,db: Session = Depends(get_db)):
+    return task_services.get_task(task_id, db)
 
 @router.patch("/{task_id}", response_model=TaskResponse, status_code=status.HTTP_200_OK)
 def update_task(task_id: int, task_data: TaskUpdate, db: Session = Depends(get_db)):
-    pass
+    return task_services.update_task(task_id, task_data, db)
 
 @router.delete("/{task_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_task(task_id: int, db: Session = Depends(get_db)):
-    pass
+    return task_services.delete_task(task_id,db)
