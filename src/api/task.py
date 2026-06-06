@@ -15,7 +15,7 @@ def create_task(task_data : TaskCreate, db: Session = Depends(get_db)):
 def get_tasks(db: Session = Depends(get_db)):
     return task_services.get_tasks(db)
 
-@router.get("/{task_id}", response_model=list[TaskResponse], status_code=status.HTTP_200_OK)
+@router.get("/{task_id}", response_model=TaskResponse, status_code=status.HTTP_200_OK)
 def get_task(task_id: int ,db: Session = Depends(get_db)):
     return task_services.get_task(task_id, db)
 

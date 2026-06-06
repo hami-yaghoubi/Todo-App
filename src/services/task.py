@@ -2,12 +2,18 @@ from src.schemas.task import TaskCreate, TaskUpdate
 from src.models.task import Task
 from sqlalchemy.orm import Session
 from sqlalchemy import select
-from fastapi import HTTPException
-
+from fastapi import HTTPException, status
+from src.models.user import User
 
 
 def create_task(task_data : TaskCreate, db: Session) -> Task :
-    task = task(**task_data.model_dump())
+    if not db.get(User, task_data.user_id):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="User not found"
+        )
+
+    task = Task(**task_data.model_dump())
 
     db.add(task)
     db.commit()
@@ -22,10 +28,10 @@ def get_tasks(db: Session) -> list[Task] :
     return result
 
 def get_task(task_id: int ,db: Session) -> Task :
-    task = db.get(task, task_id)
+    task = db.get(Task, task_id)
     if not task:
         raise HTTPException(
-            status_code=404,
+            status_code=status.HTTP_404_NOT_FOUND,
             detail="Task not found"
         )
     

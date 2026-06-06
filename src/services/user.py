@@ -2,7 +2,7 @@ from src.schemas.user import UserCreate, UserUpdate
 from src.models.user import User
 from sqlalchemy.orm import Session
 from sqlalchemy import select
-from fastapi import HTTPException
+from fastapi import HTTPException, status
 
 
 
@@ -25,8 +25,8 @@ def get_user(user_id: int ,db: Session) -> User :
     user = db.get(User, user_id)
     if not user:
         raise HTTPException(
-            status_code=404,
-            detail="Task not found"
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
         )
     
     return user
