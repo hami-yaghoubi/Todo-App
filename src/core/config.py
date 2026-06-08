@@ -9,8 +9,6 @@ class Settings(BaseSettings):
 
     model_config = SettingsConfigDict(env_file=".env")
 
-settings = Settings()
-
 
 @lru_cache
 def get_settings():
