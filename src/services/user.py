@@ -3,6 +3,7 @@ from src.models.user import User
 from sqlalchemy.orm import Session
 from sqlalchemy import select
 from fastapi import HTTPException, status
+from src.core.security import hash_password
 
 
 
@@ -14,7 +15,10 @@ def create_user(user_data : UserCreate, db: Session) -> User :
             detail="Username already exists"
         )
     
-    user = User(**user_data.model_dump())
+    user = User(
+        username = user_data.username,
+        hashed_password = hash_password(user_data.password)
+    )
 
     db.add(user)
     db.commit()
@@ -38,7 +42,7 @@ def get_user(user_id: int ,db: Session) -> User :
     
     return user
 
-def update_user(user_id: int, user_data: UserUpdate, db: Session) -> User :
+def update_user(user_id: int, user_data: UserUpdate, db: Session,) -> User :
     user = get_user(user_id,db)
 
     update_changes = user_data.model_dump(exclude_unset=True)
@@ -50,7 +54,12 @@ def update_user(user_id: int, user_data: UserUpdate, db: Session) -> User :
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Username already exists"
         )
-
+    
+    if "password" in update_changes :
+        update_changes["hashed_password"] = hash_password(
+            update_changes.pop("password")
+        )
+    
     for key, value in update_changes.items():
         setattr(user, key, value)
     
